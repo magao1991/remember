@@ -1,0 +1,49 @@
+<!DOCTYPE HTML>
+<html lang="zh">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no" />
+	<title>remember demo</title>
+</head>
+<body>
+	<div id="wrapper">
+		<p>
+			select:<br/>
+			<select id="select_0">
+				<option value="value_0">value_0</option>
+				<option value="value_1">value_1</option>
+				<option value="value_2">value_2</option>
+			</select>
+		</p>
+		<p>
+			checkbox:<br/>
+			<input id="checkbox_0" name="my_checkbox" type="checkbox"/>
+			<!-- <input id="checkbox_1" name="my_checkbox" type="checkbox"/> -->
+		</p>
+		<p>
+			radio group:<br/>
+			<input id="radio_0" type="radio" name="my_radio" value="value_0">
+			<input id="radio_1" type="radio" name="my_radio" value="value_1">
+		</p>
+		<p>
+			other type input:<br/>
+			<input id="input_0" name="my_input" />
+		</p>
+		<p>
+			textarea:<br/>
+			<textarea id="textarea_0" name="my_textarea"></textarea>
+		</p>
+	</div>
+	<script src="remember.js"></script>
+	<script>
+		remember('wrapper',{
+			handleSetValueFromCacheFuncs:{
+				// 'checkbox_0':function(){
+				// 	return false
+				// }
+			}
+			// ,ignoreIds:['checkbox_0']
+		})
+	</script>
+</body>
+</html>
