@@ -4,7 +4,9 @@ h1. 中文
 
 h2. remember.js是一个智能的组件，它的意思是“记得” 
 
-它能记录用户对下拉菜单（ == <select> == ）、单选按钮（== <input type="radio"> == ）、选择框（ == <input type="checkbox"> == ）的选择及输入框( == <input> == ，type不为"radio"和"checkbox")、输入区域( == <textarea> == )的值，并在用户下次载入页面时，按照上次记录的值还原用户的选择及输入的值。
+<pre>
+它能记录用户对下拉菜单（<select>）、单选按钮（<input type="radio">）、选择框（<input type="checkbox">）的选择及输入框(<input>，type不为"radio"和"checkbox")、输入区域(<textarea>)的值，并在用户下次载入页面时，按照上次记录的值还原用户的选择及输入的值。
+</pre>
 
 h2. 当前用户
 * "百度地图":http://map.baidu.com/
