@@ -1,27 +1,26 @@
 h1. 中文
 
-"for English please click":#english
+////"for English please click":#english////
 
-h2. remember是一个智能的组件，它的意思是“记得” 
+h2. remember.js是一个智能的组件，它的意思是“记得” 
 
-它能记录用户对下拉菜单（<select>）、单选按钮（<input type="radio">）、选择框（<input type="checkbox">）的选择及输入框(<input>，type不为"radio"和"checkbox")、输入区域(<textarea>)的值，并在用户下次载入页面时，按照上次记录的值还原用户的选择及输入的值
+它能记录用户对下拉菜单（==<select>==）、单选按钮（==<input type="radio">==）、选择框（==<input type="checkbox">==）的选择及输入框(==<input>==，type不为"radio"和"checkbox")、输入区域(==<textarea>==)的值，并在用户下次载入页面时，按照上次记录的值还原用户的选择及输入的值
 
 h2. 当前用户
 * "百度地图":http://map.baidu.com/
-* "百度团购":http://tuan.baidu.com/
 * +You
 
 h2. 如何使用?
 
 h3. Basic
 
-图片延迟加载插件基于jQuery或Zepto，在你HTML代码的尾部引入他们：
+在你HTML代码的尾部引入remember.js：
 
-<pre><script src="jquery.js"></script>
-<!-- 或 <script src="zepto.js"> -->
-<script src="lazyLoad.min.js"></script></pre>
+<pre><script src="jremember.js"></script></pre>
 
 你也可以使用我们的CDN服务器：
+
+////写到这了////
 
 <pre><script src="http://webmap2.map.bdimg.com/yyfm/jQuery_1.x/1.10.2/js/jQuery_1.x.min.js"></script>
 <!-- 或 <script src="http://webmap2.map.bdimg.com/yyfm/zepto_default/1.1.2/js/zepto_default.min.js"></script> -->
