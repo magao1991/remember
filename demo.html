@@ -20,7 +20,7 @@
 			<input id="checkbox_0" name="my_checkbox" type="checkbox"/>
 			<!-- <input id="checkbox_1" name="my_checkbox" type="checkbox"/> -->
 		</p>
-		<p>
+		<p id="radioGroupP">
 			radio group:<br/>
 			<input id="radio_0" type="radio" name="my_radio" value="value_0">
 			<input id="radio_1" type="radio" name="my_radio" value="value_1">
@@ -36,14 +36,16 @@
 	</div>
 	<script src="remember.js"></script>
 	<script>
-		remember('wrapper',{
-			handleSetValueFromCacheFuncs:{
-				// 'checkbox_0':function(){
-				// 	return false
-				// }
-			}
-			// ,ignoreIds:['checkbox_0']
-		})
+		// var myRemember = remember('wrapper',{
+		// 	handleSetValueFromCacheFuncs:{
+		// 		// 'checkbox_0':function(){
+		// 		// 	return false
+		// 		// }
+		// 	}
+		// 	// ,ignoreIds:['checkbox_0']
+		// })
+		var myRemember1 = remember('checkbox_0')
+		var myRemember2 = remember('radioGroupP') // radio需要绑定到外层上
 	</script>
 </body>
 </html>

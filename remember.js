@@ -1,4 +1,4 @@
-;(function(){
+;(function(global){
 	// configs, user can custom
 	var configs = {
 		// a group of radios with same `name`, but currect checked radio have no `value` ,use the checked radio's index of the same `name` radio group to storage
@@ -18,6 +18,13 @@
 	,localStorageKeySuffix = encodeURIComponent(location.href.replace(location.hash,''))+'__'
 	// storage the userd WrapperDom
 	,initedRemembersWrapperDom = []
+	
+	// todo : polyfill
+	,ArrayPrototypeForEach = Array.prototype.forEach
+	,ArrayPrototypeSome = Array.prototype.some
+	// todo : event polyfill
+	// addEventListener
+	// removeEventListener
 
 	// helper functions
 	// make sure any DOM operation function is called after dom ready
@@ -34,6 +41,10 @@
 			document.addEventListener('DOMContentLoaded',ready,false)
 			window.addEventListener('load',ready,false)
 		}
+	}
+
+	function getTagName(dom){
+		return dom.tagName.toUpperCase()
 	}
 
 	function getValidWrapperDOM(wrapperDOM){
@@ -62,7 +73,7 @@
 		return false
 	}
 
-	// todo : 不支持localStorage的，降级兼容到使用cookie
+	// todo : if not support localStorage ,use cookie instead
 	function getCacheStr(){
 		var cache
 		try{
@@ -84,7 +95,7 @@
 		if(oldCacheStr){
 			mergedKvObj = {}
 			oldKvArr = oldCacheStr.split('&')
-			Array.prototype.forEach.call(oldKvArr,function(e,i){
+			ArrayPrototypeForEach.call(oldKvArr,function(e,i){
 				var thisArr = e.split('=')
 				mergedKvObj[thisArr[0]] = thisArr[1]
 			})
@@ -103,9 +114,6 @@
 			localStorage.setItem(configs.localStorageKeyPrefix + localStorageKeySuffix,kvArr.join('&'))
 		}catch(e){}
 	}
-	// todo : polyfill
-	// 	Array.prototype.foreach
-	// 	Array.prototype.some
 
 	// helper functions end
 
@@ -122,7 +130,7 @@
 		var cacheArr = cacheStr.split('&')
 			,that = this
 
-		Array.prototype.forEach.call(cacheArr,function(e,i){
+		ArrayPrototypeForEach.call(cacheArr,function(e,i){
 			var one = e.split('='),
 				id = one[0],
 				DOM = document.getElementById(id),
@@ -142,7 +150,7 @@
 				}
 
 				if(runDefaultSet){
-					tagName = DOM.tagName.toUpperCase()
+					tagName = getTagName(DOM)
 					if(tagName === 'INPUT'){
 						type = DOM.type
 						if(type === 'checkbox'){
@@ -155,7 +163,7 @@
 									radiosGroup[value].checked = true
 								}
 							}else{
-								Array.prototype.some.call(radiosGroup,function(_e,_i){
+								ArrayPrototypeSome.call(radiosGroup,function(_e,_i){
 									if(_e.value === value){
 										_e.checked = true
 										return true
@@ -172,7 +180,7 @@
 					}else if(tagName === 'SELECT'){
 						// `DOM.value = value` are not perfect if no options have the given value
 						optionsGronp = DOM.getElementsByTagName('OPTION')
-						Array.prototype.some.call(optionsGronp,function(_e,_i){
+						ArrayPrototypeSome.call(optionsGronp,function(_e,_i){
 							if(_e.value === value){
 								DOM.selectedIndex = _i
 								return true
@@ -192,29 +200,54 @@
 			textareas,
 			inputs,
 			usedRadioInputIds = [],
-			that = this
+			that = this,
+			wrapperDOM = this.wrapperDOM,
+			tagName = getTagName(wrapperDOM)
+			// ,name
 
-		selects = this.wrapperDOM.getElementsByTagName('SELECT') // reget 来避免在此期间dom插入，会损失一些性能
-		textareas = this.wrapperDOM.getElementsByTagName('TEXTAREA')
-		inputs = this.wrapperDOM.getElementsByTagName('INPUT')
+		switch(tagName){
+			case 'SELECT':
+				selects = [wrapperDOM]
+				textareas = []
+				inputs = []
+				break;
+			case 'TEXTAREA':
+				selects = []
+				textareas = [wrapperDOM]
+				inputs = []
+				break;
+			case 'INPUT':
+				selects = []
+				textareas = []
+				// if(wrapperDOM.type === 'radio'){
+				// 	name = wrapperDOM.name
+				// 	inputs = name ? wrapperDOM.ownerDocument.getElementsByName(name) : [wrapperDOM]
+				// }else{
+					inputs = [wrapperDOM]
+				// }
+				break;
+			default:
+				selects = wrapperDOM.getElementsByTagName('SELECT') // reget 来避免在此期间dom插入，会损失一些性能
+				textareas = wrapperDOM.getElementsByTagName('TEXTAREA')
+				inputs = wrapperDOM.getElementsByTagName('INPUT')
+				break;
+		}
 
-		Array.prototype.forEach.call(selects,function(e,i){
+		ArrayPrototypeForEach.call(selects,function(e,i){
 			var DOM = e,
 				id = DOM.id
 			if(id && that.ignoreIds.indexOf(id) === -1){
-				// cacheArr.push(id+'='+DOM.value)
 				kvObj[id] = DOM.value
 			}
 		})
-		Array.prototype.forEach.call(textareas,function(e,i){
+		ArrayPrototypeForEach.call(textareas,function(e,i){
 			var DOM = e,
 				id = DOM.id
 			if(id && that.ignoreIds.indexOf(id) === -1){
-				// cacheArr.push(id+'='+DOM.value.replace(/\n/g,configs.textareaLineFeedHolder))
 				kvObj[id] = DOM.value.replace(/\n/g,configs.textareaLineFeedHolder)
 			}
 		})
-		Array.prototype.forEach.call(inputs,function(e,i){
+		ArrayPrototypeForEach.call(inputs,function(e,i){
 			var DOM = e,
 				id = DOM.id,
 				type,
@@ -233,7 +266,7 @@
 				}else if(type === 'radio'){
 					name = DOM.name
 					radiosGroup = name ? DOM.ownerDocument.getElementsByName(name) : [DOM]
-					Array.prototype.forEach.call(radiosGroup,function(_e,_i){
+					ArrayPrototypeForEach.call(radiosGroup,function(_e,_i){
 						if(_e.checked && !givenNameFoundChecked){
 							givenNameFoundChecked = true
 							value = _e.getAttribute('value') // use `.value` will return `on` when radio has no `value` attribute
@@ -250,19 +283,31 @@
 					value = DOM.value
 				}
 
-				// cacheArr.push(id+'='+value)
 				kvObj[id] = value
 			}
 		})
 		return kvObj
 	}
-	// todo 提供remove的方法，在方法中解绑事件
 
-	// 私有化bindEvent方法，让外部无法调用，多次调用会导致重复绑定事件
+	Remember.prototype.stop = function(){
+		var wrapperDOM = this.wrapperDOM
+		wrapperDOM.removeEventListener('change',this._changeEventFunc,true)
+		wrapperDOM.removeEventListener('blur',this._blurEventFunc,true)
+		delete this._changeEventFunc
+		delete this._blurEventFunc
+		ArrayPrototypeSome.call(initedRemembersWrapperDom,function(e,i){
+			if(e === wrapperDOM){
+				initedRemembersWrapperDom.splice(i,1)
+				return true
+			}
+		})
+	}
+
 	function bindEvent(thisRemember){
-		thisRemember.wrapperDOM.addEventListener('change',function(e){
+		// cache for unbind
+		thisRemember._changeEventFunc = function(e){
 			var DOM = e.target,
-				tagName = DOM.tagName.toUpperCase(),
+				tagName = getTagName(DOM),
 				id = DOM.id,
 				type,
 				isObjectTarget
@@ -281,11 +326,12 @@
 			if(isObjectTarget){
 				setCache(thisRemember.getKvObj())
 			}
-		},true) // change event do not bubble in some browsers, use capture instead
+		}
+		thisRemember.wrapperDOM.addEventListener('change',thisRemember._changeEventFunc,true) // change event do not bubble in some browsers, use capture instead
 
-		thisRemember.wrapperDOM.addEventListener('blur',function(e){
+		thisRemember._blurEventFunc = function(e){
 			var DOM = e.target,
-				tagName = DOM.tagName.toUpperCase(),
+				tagName = getTagName(DOM),
 				id = DOM.id,
 				type = DOM.type,
 				value
@@ -302,17 +348,18 @@
 					setCache(thisRemember.getKvObj())
 				}
 			}
-		},true) // blur event do not bubble in some browsers, use capture instead
+		}
+		thisRemember.wrapperDOM.addEventListener('blur',thisRemember._blurEventFunc,true) // blur event do not bubble in some browsers, use capture instead
 	}
 
 	// main & factory function
 	function remember(wrapperDOM,settings){
-		// todo : 每次的wrapperDOM不能包含或被已经init化的wrapperDOM包含 done
 		var newRemember
 			,hasContainedDom = false
 		wrapperDOM = getValidWrapperDOM(wrapperDOM)
-		Array.prototype.some.call(initedRemembersWrapperDom,function(e,i){
+		ArrayPrototypeSome.call(initedRemembersWrapperDom,function(e,i){
 			if(contains(e,wrapperDOM) || contains(wrapperDOM,e)){
+				hasContainedDom = true
 				return true
 			}
 		})
@@ -334,9 +381,8 @@
 		return newRemember
 	}
 
-	// todo : 不写死window为global，而是动态获取global 
-	window.remember = remember
+	global.remember = remember
 	
-	window.remember.configs = configs
+	global.remember.configs = configs
 
-})()
+})((function(){return this})())
