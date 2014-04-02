@@ -1,13 +1,18 @@
+/*!
+ * author:jieyou
+ * contacts:百度hi->youyo1122
+ * see https://github.com/jieyou/remember
+ */
 ;(function(global){
 	// configs, user can custom
 	var configs = {
 		// a group of radios with same `name`, but currect checked radio have no `value` ,use the checked radio's index of the same `name` radio group to storage
-		// `radioIndexPrefix` is the fake value prefix
+		// `noValueRadioIndexPrefix` is the fake value prefix
 		// for example, the third radio has been checked, we storage the `__R_NVRIP__2` as value
 		noValueRadioIndexPrefix : '__R_NVRIP__'
 		// inputs (not radio or checkbox) and textareas must storage the old value to check if value changed
 		,oldValueAttributeName  : 'data-roldvalue'
-		// The line feed in textarea's value will be dropped when be appended to hash string. We user following string to replace.
+		// The line feed in textarea's value will be dropped when be be joined with other string. We user following string to replace.
 		,textareaLineFeedHolder : '__R_TLFH_ramdom_769768842_ramdom_'
 		// A especial key, used for localStorage key prefix. To avoid conflicts, this value should be more complex
 		,localStorageKeyPrefix  : '__R_LSK__'
@@ -44,7 +49,8 @@
 	}
 
 	function getTagName(dom){
-		return dom.tagName.toUpperCase()
+		var tagName = dom.tagName
+		return tagName?tagName.toUpperCase():null
 	}
 
 	function getValidWrapperDOM(wrapperDOM){
@@ -223,7 +229,7 @@
 				// 	name = wrapperDOM.name
 				// 	inputs = name ? wrapperDOM.ownerDocument.getElementsByName(name) : [wrapperDOM]
 				// }else{
-					inputs = [wrapperDOM]
+				inputs = [wrapperDOM]
 				// }
 				break;
 			default:
