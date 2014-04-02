@@ -1,6 +1,6 @@
 /*!
  * author:jieyou
- * contacts:百度hi->youyo1122
+ * contacts:baidu hi->youyo1122
  * see https://github.com/jieyou/remember
  */
 ;(function(global){
@@ -9,18 +9,20 @@
 		// a group of radios with same `name`, but currect checked radio have no `value` ,use the checked radio's index of the same `name` radio group to storage
 		// `noValueRadioIndexPrefix` is the fake value prefix
 		// for example, the third radio has been checked, we storage the `__R_NVRIP__2` as value
-		noValueRadioIndexPrefix : '__R_NVRIP__'
-		// inputs (not radio or checkbox) and textareas must storage the old value to check if value changed
-		,oldValueAttributeName  : 'data-roldvalue'
-		// The line feed in textarea's value will be dropped when be be joined with other string. We user following string to replace.
-		,textareaLineFeedHolder : '__R_TLFH_ramdom_769768842_ramdom_'
-		// A especial key, used for localStorage key prefix. To avoid conflicts, this value should be more complex
-		,localStorageKeyPrefix  : '__R_LSK__'
+		noValueRadioIndexPrefix  : '__R_NVRIP__'
+		// inputs (not radio or  checkbox) and textareas must storage the old value to check if value changed
+		,oldValueAttributeName   : 'data-roldvalue'
+		// The line feed in text area's value will be dropped when be be joined with other string. We user following string to replace.
+		,textareaLineFeedHolder  : '__R_TLFH_ramdom_769768842_ramdom_'
+		// A especial key, used  for localStorage key prefix. To avoid conflicts, this value should be more complex
+		,localStorageKeyPrefix   : '__R_LSK__'
+		// 我们将不同“网址”的值存储在不同的key下，这里所说的“网址”不包含location.hash部分。但是是否包含location.search部分是可选的。当这个值为false时，将包含（http://www.example.com/?a=1与http://www.example.com/?a=2视为不同“网址”）；否则不包含（http://www.example.com/?a=1与http://www.example.com/?a=2视为同一个“网址”）
+		,ignoreSearchStringInUrl :false
 	}
 	// In this version, we do nothing in broswer which do not support `localStorage`
 	,supportLocalStorage = 'localStorage' in window
 	// Get current url without hash as the localStorage key suffix
-	,localStorageKeySuffix = encodeURIComponent(location.href.replace(location.hash,''))+'__'
+	,localStorageKeySuffix = encodeURIComponent(configs.ignoreSearchStringInUrl?location.href.split('?')[0]:location.href.replace(location.hash,''))+'__'
 	// storage the userd WrapperDom
 	,initedRemembersWrapperDom = []
 	
@@ -37,14 +39,14 @@
 	function readyCall(callbackFunc){
 		function ready(){
 			document.removeEventListener('DOMContentLoaded',ready,false)
-			window.removeEventListener('load',ready,false)
+			global.removeEventListener('load',ready,false)
 			callbackFunc.call(document)
 		}
 		if(document.readyState === 'complete'){
 			setTimeout(ready)
 		}else{
 			document.addEventListener('DOMContentLoaded',ready,false)
-			window.addEventListener('load',ready,false)
+			global.addEventListener('load',ready,false)
 		}
 	}
 
@@ -392,3 +394,7 @@
 	global.remember.configs = configs
 
 })((function(){return this})())
+
+// todo input type为submit\button\hidden忽略
+// todo 提供每个id，设置值完毕后的回调
+// todo 提供handle set cache字符串的配置项
