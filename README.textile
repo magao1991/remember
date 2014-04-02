@@ -101,7 +101,7 @@ h4. 修改默认配置
 # @oldValueAttributeName@ 默认值 @'data-roldvalue'@ // @<input>，type不为"radio"和"checkbox"@ 和 @textarea@ 必须将旧值存储起来，以便于检查值是否发生了变化。我们将旧制存储到这个dom属性中
 # @textareaLineFeedHolder@ 默认值 @'__R_TLFH_ramdom_769768842_ramdom_'@ // textarea的换行符会在与其他字符串连接时丢弃。为了避免这种情况，我们在这之前用这个属性的值将换行符替换到。在还原时再替换回来
 # @localStorageKeyPrefix@ 默认值 @'__R_LSK__'@ // 一个特殊的key，用于localStorage的key的前缀。为了避免冲突，它的值应该有一些复杂度。
-# @ignoreSearchStringInUrl@ 默认值 @false@ // 我们将不同“网址”的值存储在不同的key下，这里所说的“网址”不包含location.hash部分。但是是否包含location.search部分是可选的。当这个值为false时，将包含location.search部分（http://www.example.com/?a=1与http://www.example.com/?a=2视为不同“网址”）；否则不包含location.search部分（http://www.example.com/?a=1与http://www.example.com/?a=2视为同一个“网址”）
+# @ignoreSearchStringInUrl@ 默认值 @false@ // 我们将不同“网址”的值存储在不同的key下，这里所说的“网址”不包含location.hash部分。但是是否包含location.search部分是可选的。当这个值为false时，将包含location.search部分（ `http://www.example.com/?a=1` 与 `http://www.example.com/?a=2` 视为不同“网址”）；否则不包含location.search部分（ `http://www.example.com/?a=1` 与 `http://www.example.com/?a=2` 视为同一个“网址”）
 
 h3. 详细接口
 
