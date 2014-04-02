@@ -21,8 +21,8 @@
 	}
 	// In this version, we do nothing in broswer which do not support `localStorage`
 	,supportLocalStorage = 'localStorage' in window
-	// Get current url without hash as the localStorage key suffix
-	,localStorageKeySuffix = encodeURIComponent(configs.ignoreSearchStringInUrl?location.href.split('?')[0]:location.href.replace(location.hash,''))+'__'
+	// Get current url as the localStorage key suffix
+	,localStorageKeySuffix
 	// storage the userd WrapperDom
 	,initedRemembersWrapperDom = []
 	
@@ -55,6 +55,14 @@
 		return tagName?tagName.toUpperCase():null
 	}
 
+	// Get current url as the localStorage key suffix
+	function getLocalStorageKeySuffix(){
+		if(!localStorageKeySuffix){
+			localStorageKeySuffix = encodeURIComponent(configs.ignoreSearchStringInUrl?location.href.split('?')[0]:location.href.replace(location.hash,''))+'__'
+		}
+		return localStorageKeySuffix
+	}
+
 	function getValidWrapperDOM(wrapperDOM){
 		if(typeof(wrapperDOM) === 'string'){
 			wrapperDOM = document.getElementById(wrapperDOM)
@@ -85,7 +93,7 @@
 	function getCacheStr(){
 		var cache
 		try{
-			cache = localStorage.getItem(configs.localStorageKeyPrefix + localStorageKeySuffix)
+			cache = localStorage.getItem(configs.localStorageKeyPrefix + getLocalStorageKeySuffix())
 			if(cache){
 				return cache
 			}
@@ -119,7 +127,7 @@
 			kvArr.push(key2+'='+mergedKvObj[key2])
 		}
 		try{
-			localStorage.setItem(configs.localStorageKeyPrefix + localStorageKeySuffix,kvArr.join('&'))
+			localStorage.setItem(configs.localStorageKeyPrefix + getLocalStorageKeySuffix(),kvArr.join('&'))
 		}catch(e){}
 	}
 
