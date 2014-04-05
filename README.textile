@@ -95,7 +95,8 @@ remember(document,{
 
 h4. 修改默认配置
 
-可以通过修改remember.configs对象上的各个字段来打到修改默认配置的效果：
+可以通过修改remember.configs对象上的各个字段来打到修改默认配置的效果。
+请注意，需要先修改默认配置，再初始化remember对象实例。
 
 # @noValueRadioIndexPrefix@ 默认值 @'__R_NVRIP__'@ // 有一组 @name@ 值相同的 @<input type="radio">@ ，但当前被选中的radio可能没有 @value@ 值，我们就要一个模拟的值——用它在这一组radio中的位置来代替它的值来存储。`noValueRadioIndexPrefix`就是这个假值的前缀。举个例子：如果第三个radio被选中了，我们将noValueRadioIndexPrefix+'3'，默认配置下即`__R_NVRIP__2`当做模拟值来存储
 # @oldValueAttributeName@ 默认值 @'data-roldvalue'@ // @<input>，type不为"radio"和"checkbox"@ 和 @textarea@ 必须将旧值存储起来，以便于检查值是否发生了变化。我们将旧制存储到这个dom属性中
