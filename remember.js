@@ -73,6 +73,10 @@
 		return document
 	}
 
+	function isNormalInput(type){
+		return type !== 'submit' && type !== 'button' && type !== 'hidden' && type !== 'image' && type !== 'file' && type !== 'reset'
+	}
+
 	function contains(parent,child){
 		if(parent === child){
 			return true
@@ -186,7 +190,7 @@
 									}
 								})
 							}
-						}else{
+						}else if(isNormalInput(type)){
 							DOM.setAttribute(configs.oldValueAttributeName,value)
 							DOM.value = value
 						}
@@ -267,7 +271,7 @@
 			var DOM = e,
 				id = DOM.id,
 				type,
-				value,
+				value = null,
 				name,
 				radiosGroup,
 				givenNameFoundChecked
@@ -295,11 +299,12 @@
 					if(!value){
 						value = ''
 					}
-				}else{
+				}else if(isNormalInput(type)){
 					value = DOM.value
 				}
-
-				kvObj[id] = value
+				if(value !== null){
+					kvObj[id] = value
+				}
 			}
 		})
 		return kvObj
@@ -333,8 +338,11 @@
 			if(tagName === 'SELECT'){
 				isObjectTarget = true
 			}else if(tagName === 'INPUT'){
-				isObjectTarget = true
+				// isObjectTarget = true
 				type = DOM.type
+				// if(isNormalInput(type)){
+				// 	sObjectTarget = true
+				// }
 				if(type === 'checkbox' || type === 'radio'){
 					isObjectTarget = true
 				}
@@ -354,7 +362,7 @@
 			if(id && thisRemember.ignoreIds.indexOf(id) !== -1){
 				return true
 			}
-			if((tagName === 'INPUT' && (type !== 'checkbox' && type !== 'radio')) || tagName === 'TEXTAREA'){
+			if((tagName === 'INPUT' && (type !== 'checkbox' && type !== 'radio' && isNormalInput(type))) || tagName === 'TEXTAREA'){
 				value = DOM.value
 				if(tagName === 'TEXTAREA'){
 					value = value.replace(/\n/g,configs.textareaLineFeedHolder)
@@ -403,6 +411,6 @@
 
 })((function(){return this})())
 
-// todo input type为submit\button\hidden忽略
 // todo 提供每个id，设置值完毕后的回调
 // todo 提供handle set cache字符串的配置项
+// todo 加入AMD支持

@@ -5,7 +5,7 @@
 h2. remember.js
 
 它是一个智能的组件，它的意思是“记得” 
-它能记录用户对下拉菜单 @<select>@ 、单选按钮 @<input type="radio">@ 、选择框 @<input type="checkbox">@ 的选择及输入框 @<input>，type不为"radio"和"checkbox"@ 、输入区域 @<textarea>@ 的值，并在用户下次载入页面时，按照上次记录的值还原用户的选择及输入的值。
+它能记录用户对下拉菜单 @<select>@ 、单选按钮 @<input type="radio">@ 、选择框 @<input type="checkbox">@ 的选择及各种输入框 @<input>，type不为"radio"、"checkbox"、"submit"、"button"、"hidden"、"image"、"file"或"reset"@ 、输入区域 @<textarea>@ 的值，并在用户下次载入页面时，按照上次记录的值还原用户的选择及输入的值。
 
 支持的浏览器如下，也就是说，目前还在广泛使用的浏览器中，只有IE6\IE7\IE8不支持：
 
@@ -32,7 +32,7 @@ h3. Basic
 
 <!-- <pre><script src="??????????"></script></pre> -->
 
-接着你为所有要记录的“下拉菜单 @<select>@ 、单选按钮 @<input type="radio">@ 、选择框 @<input type="checkbox">@ 及输入框 @<input>，type不为"radio"和"checkbox"@ 、输入区域 @<textarea>@ ”（我们称它为“可交互元素”，下同）均赋予一个id，如：
+接着你为所有要记录的“下拉菜单 @<select>@ 、单选按钮 @<input type="radio">@ 、选择框 @<input type="checkbox">@ 及及各种输入框 @<input>，type不为"radio"、"checkbox"、"submit"、"button"、"hidden"、"image"、"file"或"reset"@  、输入区域 @<textarea>@ ”（我们称它为“可交互元素”，下同）均赋予一个id，如：
 
 <pre><input id="checkbox_0" type="checkbox"/></pre>
 
@@ -46,15 +46,15 @@ h3. 高级
 
 h4. 指定记录的区域
 
-remember(wrapperDOM)方法的第一个参数 @wrapperDOM@ 可以是某个dom元素，或某个dom元素id的字符串。
-可以通过传递区域最完成dom元素或它的id来指定记录的区域：
+remember(wrapperDOM)方法的第一个参数 @wrapperDOM@ 可以是某个dom元素，或某个dom元素的id的字符串。
+可以通过传递需要记录的区域的最外层dom元素或它的id，来指定需要记录的区域：
 
 <pre><script>
-remember('wrapper')
+remember('wrapper') // 这将记录id为`wrapper`的dom元素内部的所有符合要求的“可交互元素”
 // 或 remember(document.getElementById('wrapper'))
 </script></pre>
 
-可以指定页面中的多个区域，通过调用多次 @remember@ 方法，传递不同的 @wrapperDOM@ 参数来实现
+可以指定页面中的多个区域，通过调用多次 @remember@ 方法，传递不同的 @wrapperDOM@ 参数来实现：
 但不能是：指定的`wrapperDOM`已被占用，或与另一个已被使用的`wrapperDOM`有包含或被包含的关系
 
 <pre><script>
@@ -62,10 +62,31 @@ remember('area1')
 remember('area2')
 </script></pre>
 
+甚至可以将区域限制小到只有某一个“可交互元素”：
+
+<pre>// html:
+<input id="input_0" />
+<script>
+remember('input_0') // 指定记录的区域仅为id为`input_0`的input本身
+</script></pre>
+
+但在这种情况下，你不能只指定区域为：一组`name`值相同的单选按钮 @<input type="radio">@ 中的一个，因为这一组单选按钮共同来决定一个值，只记录其中一个是没有意义的
+
+<pre>// html:
+<p id="radioGroupP">
+    radio group:<br/>
+    <input id="radio_0" type="radio" name="my_radio" value="value_0">
+    <input id="radio_1" type="radio" name="my_radio" value="value_1">
+</p>
+<script>
+remember('radio_1') // 反例，这是不对的，没有意义
+remember('radioGroupP') // 这是对的，因为所有`name`相同的单选按钮都被包裹进去了
+</script></pre>
+
 h4. 不记录页面中的某些“可交互元素”
 
 最简单的方法就是不为这些“可交互元素”赋予id，或者将它们的id通过下面的方式加入到忽略id数组。
-对于单选按钮 @<input type="radio">@ ，你需要将它们每一个 @<input>@ 的id都添加进去
+对于单选按钮 @<input type="radio">@ ，你需要将它们每一个 @<input>@ 的id都添加进去，或者给每一个 @<input>@ 都不赋予id
 
 <pre><script>
 remember(document,{
@@ -129,6 +150,7 @@ myRemember.setValue()
 </script></pre>
 
 这个方法会在调用remember()，生成remember对象实例时自动调用一次，它的作用是将缓存储的上一次“可交互元素”的值设置到对应“可交互元素”上。
+你也可以在适当的时候手动调用它，这样它会把该remember对象实例所包含的“可交互元素”再次赋值一遍。
 
 h4. getKvObj方法
 
