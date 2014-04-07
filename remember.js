@@ -405,9 +405,20 @@
 		return newRemember
 	}
 
-	global.remember = remember
-	
-	global.remember.configs = configs
+	remember.configs = configs
+
+	// AMD && CMD
+    if(typeof define === 'function'){
+        define(function(){
+            return remember
+        })
+    // CommonJS
+    }else if(typeof module !== "undefined" && module !== null){
+        module.exports = remember
+    // global
+    }else{
+        global.remember = remember;
+    }
 
 })((function(){return this})())
 

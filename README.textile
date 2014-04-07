@@ -18,6 +18,7 @@ h2. remember.js
 
 h2. 当前用户
 * "百度地图":http://map.baidu.com/
+* "百度团购":http://tuan.baidu.com/
 * +You
 
 h2. 如何使用?
@@ -31,6 +32,10 @@ h3. Basic
 <!-- 你也可以使用我们的CDN服务器： -->
 
 <!-- <pre><script src="??????????"></script></pre> -->
+
+或者使用AMD、CMD兼容的模块加载器：
+
+
 
 接着你为所有要记录的“下拉菜单 @<select>@ 、单选按钮 @<input type="radio">@ 、选择框 @<input type="checkbox">@ 及及各种输入框 @<input>，type不为"radio"、"checkbox"、"submit"、"button"、"hidden"、"image"、"file"或"reset"@  、输入区域 @<textarea>@ ”（我们称它为“可交互元素”，下同）均赋予一个id，如：
 
