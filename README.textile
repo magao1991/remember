@@ -35,7 +35,11 @@ h3. Basic
 
 或者使用AMD、CMD兼容的模块加载器：
 
-
+<pre>
+require('remember.js',function(remember){
+    // your code 
+})
+</pre>
 
 接着你为所有要记录的“下拉菜单 @<select>@ 、单选按钮 @<input type="radio">@ 、选择框 @<input type="checkbox">@ 及及各种输入框 @<input>，type不为"radio"、"checkbox"、"submit"、"button"、"hidden"、"image"、"file"或"reset"@  、输入区域 @<textarea>@ ”（我们称它为“可交互元素”，下同）均赋予一个id，如：
 
