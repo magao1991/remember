@@ -16,10 +16,7 @@ h2. remember.js
 * iOS 3.2+
 * Android 2.1+
 
-<!-- h2. 当前用户 -->
-<!-- * "百度地图":http://map.baidu.com/ -->
-<!-- * "百度团购":http://tuan.baidu.com/ -->
-<!-- * +You -->
+<!-- h2. 当前用户 --><!-- * "百度地图":http://map.baidu.com/ --><!-- * "百度团购":http://tuan.baidu.com/ --><!-- * +You -->
 
 h2. 如何使用?
 
