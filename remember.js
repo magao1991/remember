@@ -140,30 +140,31 @@
 
 	// constructor
 	function Remember(wrapperDOM,settings){
+		var that = this
 		settings = settings || {}
-		this.wrapperDOM = wrapperDOM
-		this.handleSetValueFromCacheFuncs = settings.handleSetValueFromCacheFuncs || {}
-		this.ignoreIds = settings.ignoreIds || []
-		switch(getTagName(this.wrapperDOM)){
+		that.wrapperDOM = wrapperDOM
+		that.handleSetValueFromCacheFuncs = settings.handleSetValueFromCacheFuncs || {}
+		that.ignoreIds = settings.ignoreIds || []
+		switch(getTagName(that.wrapperDOM)){
 			case 'SELECT':
-				this.selects = [wrapperDOM]
-				this.textareas = []
-				this.inputs = []
+				that.selects = [wrapperDOM]
+				that.textareas = []
+				that.inputs = []
 				break;
 			case 'TEXTAREA':
-				this.selects = []
-				this.textareas = [wrapperDOM]
-				this.inputs = []
+				that.selects = []
+				that.textareas = [wrapperDOM]
+				that.inputs = []
 				break;
 			case 'INPUT':
-				this.selects = []
-				this.textareas = []
-				this.inputs = [wrapperDOM]
+				that.selects = []
+				that.textareas = []
+				that.inputs = [wrapperDOM]
 				break;
 			default:
-				this.selects = wrapperDOM.getElementsByTagName('SELECT')
-				this.textareas = wrapperDOM.getElementsByTagName('TEXTAREA')
-				this.inputs = wrapperDOM.getElementsByTagName('INPUT')
+				that.selects = wrapperDOM.getElementsByTagName('SELECT')
+				that.textareas = wrapperDOM.getElementsByTagName('TEXTAREA')
+				that.inputs = wrapperDOM.getElementsByTagName('INPUT')
 				break;
 		}
 	}
@@ -183,7 +184,7 @@
 				runDefaultSet,
 				radiosGroup,
 				optionsGronp,
-				thisHandleValueChangeFunc
+				thisHandleSetValueFromCacheFunc
 			if(DOM && that.ignoreIds.indexOf(id) === -1 && contains(that.wrapperDOM,DOM)){
 
 				runDefaultSet = true
@@ -277,28 +278,28 @@
 		// 		break;
 		// }
 
-		ArrayPrototypeForEach.call(this.selects,function(e,i){
+		ArrayPrototypeForEach.call(that.selects,function(e,i){
 			var DOM = e,
 				id = DOM.id
 			if(id && that.ignoreIds.indexOf(id) === -1){
-				kvObj[id] = DOM.value
+				kvObj[id] = DOM.value // option 如果没有设置value值，则浏览器会将它的innerHTML当做value值；如果value和option都没有，则为空字符串''。所以总能正确设置
 			}
 		})
-		ArrayPrototypeForEach.call(this.textareas,function(e,i){
+		ArrayPrototypeForEach.call(that.textareas,function(e,i){
 			var DOM = e,
 				id = DOM.id
 			if(id && that.ignoreIds.indexOf(id) === -1){
 				kvObj[id] = DOM.value.replace(/\n/g,configs.textareaLineFeedHolder)
 			}
 		})
-		ArrayPrototypeForEach.call(this.inputs,function(e,i){
+		ArrayPrototypeForEach.call(that.inputs,function(e,i){
 			var DOM = e,
 				id = DOM.id,
 				type,
 				value = null,
 				name,
 				radiosGroup,
-				givenNameFoundChecked
+				givenNameFoundChecked = false
 			if(id && usedRadioInputIds.indexOf(id) === -1 && that.ignoreIds.indexOf(id) === -1){
 				type = DOM.type
 				if(type === 'checkbox'){
@@ -314,13 +315,13 @@
 						if(_e.checked && !givenNameFoundChecked){
 							givenNameFoundChecked = true
 							value = _e.getAttribute('value') // use `.value` will return `on` when radio has no `value` attribute
-							if(!value){
+							if(!value){ // radio 未设置value值
 								value = configs.noValueRadioIndexPrefix+_i
 							}
 						}
 						usedRadioInputIds.push(_e.id)
 					})
-					if(!value){
+					if(!value){ // 没有任何一个radio被选中了
 						value = ''
 					}
 				}else if(isNormalInput(type)){
@@ -335,11 +336,12 @@
 	}
 
 	Remember.prototype.stop = function(){
-		var wrapperDOM = this.wrapperDOM
-		wrapperDOM.removeEventListener('change',this._changeEventFunc,true)
-		wrapperDOM.removeEventListener('blur',this._blurEventFunc,true)
-		delete this._changeEventFunc
-		delete this._blurEventFunc
+		var that = this
+		var wrapperDOM = that.wrapperDOM
+		wrapperDOM.removeEventListener('change',that._changeEventFunc,true)
+		wrapperDOM.removeEventListener('blur',that._blurEventFunc,true)
+		delete that._changeEventFunc
+		delete that._blurEventFunc
 		ArrayPrototypeSome.call(initedRemembersWrapperDom,function(e,i){
 			if(e === wrapperDOM){
 				initedRemembersWrapperDom.splice(i,1)
