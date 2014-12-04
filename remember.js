@@ -106,6 +106,7 @@
 	}
 
 	function setCache(kvObj){
+		// alert('setCache')
 		var oldCacheStr = getCacheStr()
 			,oldKvArr
 			,mergedKvObj
@@ -143,6 +144,28 @@
 		this.wrapperDOM = wrapperDOM
 		this.handleSetValueFromCacheFuncs = settings.handleSetValueFromCacheFuncs || {}
 		this.ignoreIds = settings.ignoreIds || []
+		switch(getTagName(this.wrapperDOM)){
+			case 'SELECT':
+				this.selects = [wrapperDOM]
+				this.textareas = []
+				this.inputs = []
+				break;
+			case 'TEXTAREA':
+				this.selects = []
+				this.textareas = [wrapperDOM]
+				this.inputs = []
+				break;
+			case 'INPUT':
+				this.selects = []
+				this.textareas = []
+				this.inputs = [wrapperDOM]
+				break;
+			default:
+				this.selects = wrapperDOM.getElementsByTagName('SELECT')
+				this.textareas = wrapperDOM.getElementsByTagName('TEXTAREA')
+				this.inputs = wrapperDOM.getElementsByTagName('INPUT')
+				break;
+		}
 	}
 
 	// call when init
@@ -216,58 +239,59 @@
 
 	Remember.prototype.getKvObj = function(){
 		var kvObj = {},
-			selects,
-			textareas,
-			inputs,
+			// selects,
+			// textareas,
+			// inputs,
 			usedRadioInputIds = [],
-			that = this,
-			wrapperDOM = this.wrapperDOM,
-			tagName = getTagName(wrapperDOM)
-			// ,name
+			that = this
+		// 	,
+		// 	wrapperDOM = this.wrapperDOM,
+		// 	tagName = getTagName(wrapperDOM)
+		// 	// ,name
 
-		switch(tagName){
-			case 'SELECT':
-				selects = [wrapperDOM]
-				textareas = []
-				inputs = []
-				break;
-			case 'TEXTAREA':
-				selects = []
-				textareas = [wrapperDOM]
-				inputs = []
-				break;
-			case 'INPUT':
-				selects = []
-				textareas = []
-				// if(wrapperDOM.type === 'radio'){
-				// 	name = wrapperDOM.name
-				// 	inputs = name ? wrapperDOM.ownerDocument.getElementsByName(name) : [wrapperDOM]
-				// }else{
-				inputs = [wrapperDOM]
-				// }
-				break;
-			default:
-				selects = wrapperDOM.getElementsByTagName('SELECT') // reget 来避免在此期间dom插入，会损失一些性能
-				textareas = wrapperDOM.getElementsByTagName('TEXTAREA')
-				inputs = wrapperDOM.getElementsByTagName('INPUT')
-				break;
-		}
+		// switch(tagName){
+		// 	case 'SELECT':
+		// 		selects = [wrapperDOM]
+		// 		textareas = []
+		// 		inputs = []
+		// 		break;
+		// 	case 'TEXTAREA':
+		// 		selects = []
+		// 		textareas = [wrapperDOM]
+		// 		inputs = []
+		// 		break;
+		// 	case 'INPUT':
+		// 		selects = []
+		// 		textareas = []
+		// 		// if(wrapperDOM.type === 'radio'){
+		// 		// 	name = wrapperDOM.name
+		// 		// 	inputs = name ? wrapperDOM.ownerDocument.getElementsByName(name) : [wrapperDOM]
+		// 		// }else{
+		// 		inputs = [wrapperDOM]
+		// 		// }
+		// 		break;
+		// 	default:
+		// 		selects = wrapperDOM.getElementsByTagName('SELECT')
+		// 		textareas = wrapperDOM.getElementsByTagName('TEXTAREA')
+		// 		inputs = wrapperDOM.getElementsByTagName('INPUT')
+		// 		break;
+		// }
 
-		ArrayPrototypeForEach.call(selects,function(e,i){
+		ArrayPrototypeForEach.call(this.selects,function(e,i){
 			var DOM = e,
 				id = DOM.id
 			if(id && that.ignoreIds.indexOf(id) === -1){
 				kvObj[id] = DOM.value
 			}
 		})
-		ArrayPrototypeForEach.call(textareas,function(e,i){
+		ArrayPrototypeForEach.call(this.textareas,function(e,i){
 			var DOM = e,
 				id = DOM.id
 			if(id && that.ignoreIds.indexOf(id) === -1){
 				kvObj[id] = DOM.value.replace(/\n/g,configs.textareaLineFeedHolder)
 			}
 		})
-		ArrayPrototypeForEach.call(inputs,function(e,i){
+		ArrayPrototypeForEach.call(this.inputs,function(e,i){
 			var DOM = e,
 				id = DOM.id,
 				type,
@@ -335,7 +359,7 @@
 			if(id && thisRemember.ignoreIds.indexOf(id) !== -1){
 				return true
 			}
-			if(tagName === 'SELECT'){
+			if(tagName === 'SELECT' || tagName === 'TEXTAREA'){
 				isObjectTarget = true
 			}else if(tagName === 'INPUT'){
 				// isObjectTarget = true
@@ -343,7 +367,7 @@
 				// if(isNormalInput(type)){
 				// 	sObjectTarget = true
 				// }
-				if(type === 'checkbox' || type === 'radio'){
+				if(!type || type === 'text' || type === 'checkbox' || type === 'radio' || type === 'password' || type === 'range'){ // todo : input type="range" 在IE上的一次拖动，会触发多次change事件 
 					isObjectTarget = true
 				}
 			}
@@ -357,18 +381,21 @@
 			var DOM = e.target,
 				tagName = getTagName(DOM),
 				id = DOM.id,
-				type = DOM.type,
-				value
+				type = DOM.type
+				// ,
+				// value
 			if(id && thisRemember.ignoreIds.indexOf(id) !== -1){
 				return true
 			}
-			if((tagName === 'INPUT' && (type !== 'checkbox' && type !== 'radio' && isNormalInput(type))) || tagName === 'TEXTAREA'){
-				value = DOM.value
-				if(tagName === 'TEXTAREA'){
-					value = value.replace(/\n/g,configs.textareaLineFeedHolder)
-				}
-				if(value !== DOM.getAttribute(configs.oldValueAttributeName)){
-					DOM.setAttribute(configs.oldValueAttributeName,value)
+			if(tagName === 'INPUT'){
+				type = DOM.type
+				if((type && type !== 'text' && type !== 'checkbox' && type !== 'radio' && type !== 'password' && type !== 'range' && isNormalInput(type)) && DOM.value !== DOM.getAttribute(configs.oldValueAttributeName)){
+				// value = DOM.value
+				// if(tagName === 'TEXTAREA'){
+				// 	value = value.replace(/\n/g,configs.textareaLineFeedHolder)
+				// }
+				// if(DOM.value !== DOM.getAttribute(configs.oldValueAttributeName)){
+					DOM.setAttribute(configs.oldValueAttributeName,DOM.value)
 					setCache(thisRemember.getKvObj())
 				}
 			}
@@ -408,20 +435,19 @@
 	remember.configs = configs
 
 	// AMD && CMD
-    if(typeof define === 'function'){
-        define(function(){
-            return remember
-        })
-    // CommonJS
-    }else if(typeof module !== "undefined" && module !== null){
-        module.exports = remember
-    // global
-    }else{
-        global.remember = remember;
-    }
+	if(typeof define === 'function'){
+		define(function(){
+			return remember
+		})
+	// CommonJS
+	}else if(typeof module !== "undefined" && module !== null){
+		module.exports = remember
+	// global
+	}else{
+		global.remember = remember
+	}
 
 })((function(){return this})())
 
-// todo 提供每个id，设置值完毕后的回调
-// todo 提供handle set cache字符串的配置项
-// todo 加入AMD支持
+// todo 提供每个id，设置值完毕后的回调，目前只提供了设置值之前的handle
+// todo 设置值的时候，采用传参的形式，手动指明只有哪个“可交互元素”发生了改变，无需为wrapperDOM内的所有元素重新取值

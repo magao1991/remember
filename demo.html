@@ -30,7 +30,8 @@
 			</p>
 			<p>
 				input type="text"<br/>
-				<input id="input_text_0" type="text" name="my_input" />
+				不写type:<input id="input_text_0" name="my_input" />
+				写type="text":<input id="input_text_1" type="text" name="my_input" />
 			</p>
 			<p>
 				textarea:<br/>
@@ -97,6 +98,16 @@
 		// })
 		// var myRemember1 = remember('checkbox_0')
 		// var myRemember2 = remember('radioGroupP') // radio需要绑定到外层上
+		
+		// document.getElementById('input_text_0').addEventListener('change',function(){    console.log('input_text_0')},false)
+		// document.getElementById('textarea_0').addEventListener('change',function(){      console.log('textarea_0')},false)
+		// document.getElementById('input_range_0').addEventListener('change',function(){   console.log('input_range_0')},false)
+		// document.getElementById('input_number_0').addEventListener('change',function(){  console.log('input_number_0')},false)
+		// document.getElementById('input_date_0').addEventListener('change',function(){    console.log('input_date_0')},false)
+		// document.getElementById('input_password_0').addEventListener('change',function(){console.log('input_password_0')},false)
+
+		// document.getElementById('input_range_0').addEventListener('mouseUp',function(){   alert('input_range_0')},false)
+		
 		remember()
 	</script>
 </body>
